@@ -1,21 +1,20 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-// Configuración de la prueba
+const BASE_URL = __ENV.BASE_URL || 'http://localhost:8000';
+
 export const options = {
-  vus: 1,        // 1 usuario virtual
-  duration: '10s', // durante 10 segundos
+  vus: 1,
+  duration: '10s',
 };
 
 export default function () {
-  // Llama al endpoint de salud
-  const res = http.get('http://localhost:8000/health');
+  const res = http.get(`${BASE_URL}/health`);
 
-  // Verifica que la respuesta sea correcta
   check(res, {
     'status es 200': (r) => r.status === 200,
     'responde en menos de 500ms': (r) => r.timings.duration < 500,
   });
 
-  sleep(1); // espera 1 segundo entre peticiones
+  sleep(1);
 }
