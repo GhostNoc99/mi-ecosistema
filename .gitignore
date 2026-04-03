@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Docker
+*.log
+
+# VS Code
+.vscode/
+
+# Base de datos local
+postgres_data/
