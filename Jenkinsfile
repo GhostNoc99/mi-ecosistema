@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Info'){
-            steps{
-                echo 'Prueba jenkins pileine docker'
-            }
-        }
-
         stage('Checkout') {
             steps {
                 echo '📥 Bajando código de GitHub...'
@@ -19,14 +13,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo '🐳 Construyendo imagen Docker...'
-                sh 'docker compose build'
+                sh 'docker-compose build'
             }
         }
 
         stage('Test') {
             steps {
                 echo '🧪 Verificando que la API responde...'
-                sh 'docker compose up -d'
+                sh 'docker-compose up -d'
                 sh 'sleep 5'
                 sh 'curl -f http://localhost:8000/health'
             }
