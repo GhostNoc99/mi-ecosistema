@@ -17,10 +17,24 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Health Check') {
             steps {
                 echo '🧪 Verificando que la API responde...'
                 sh 'curl -f http://host.docker.internal:8000/health'
+            }
+        }
+
+        stage('Smoke Test k6') {
+            steps {
+                echo '🔥 Corriendo smoke test con K6...'
+                sh 'k6 run k6/smoke-test.js'
+            }
+        }
+
+        stage('Load Test k6') {
+            steps {
+                echo '📈 Corriendo load test con k6...'
+                sh 'k6 run k6/load-test.js'
             }
         }
 
