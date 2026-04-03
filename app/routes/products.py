@@ -9,6 +9,7 @@ from database import get_db
 router = APIRouter(prefix="/products", tags=["Products"])
 
 # Lo que recibe la API al crear
+# Prueba pipeline
 class ProductCreate(BaseModel):
     name: str
     description: str = ""
