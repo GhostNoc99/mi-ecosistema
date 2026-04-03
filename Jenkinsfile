@@ -3,6 +3,12 @@ pipeline {
 
     stages {
 
+        stage('Info'){
+            steps{
+                echo 'Prueba jenkins pileine docker'
+            }
+        }
+
         stage('Checkout') {
             steps {
                 echo '📥 Bajando código de GitHub...'
