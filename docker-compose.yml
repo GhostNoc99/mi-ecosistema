@@ -1,5 +1,6 @@
 services:
 
+  # 🐍 Tu API FastAPI
   api:
     build: ./app
     ports:
@@ -9,6 +10,7 @@ services:
     depends_on:
       - db
 
+  # 🐘 PostgreSQL
   db:
     image: postgres:15
     environment:
