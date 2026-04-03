@@ -20,9 +20,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo '🧪 Verificando que la API responde...'
-                sh 'docker-compose up -d'
-                sh 'sleep 5'
-                sh 'curl -f http://localhost:8000/health'
+                sh 'curl -f http://host.docker.internal:8000/health'
             }
         }
 
