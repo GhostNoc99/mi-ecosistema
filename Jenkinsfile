@@ -1,7 +1,6 @@
 pipeline {
     agent any
 
-    // 🌙 Stress test automático cada noche a las 2am
     triggers {
         cron('0 2 * * *')
     }
@@ -29,7 +28,6 @@ pipeline {
             }
         }
 
-        // ✅ Siempre corre — cualquier rama, cualquier push
         stage('Smoke Test') {
             steps {
                 echo '🔥 Smoke test — sanidad básica...'
@@ -37,21 +35,22 @@ pipeline {
             }
         }
 
-        // ✅ Solo corre en rama main
         stage('Load Test') {
-            when { branch 'main' }
+            when {
+                anyOf {
+                    branch 'main'
+                    expression { env.GIT_BRANCH == 'origin/main' }
+                }
+            }
             steps {
                 echo '📈 Load test — carga normal...'
                 sh 'k6 run k6/load-test.js --env BASE_URL=http://host.docker.internal:8000'
             }
         }
 
-        // 🌙 Solo corre en el cron nocturno
         stage('Stress Test') {
             when {
-                anyOf {
-                    triggeredBy 'TimerTrigger'
-                }
+                triggeredBy 'TimerTrigger'
             }
             steps {
                 echo '💥 Stress test — prueba de límites...'
