@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    // 🌙 Stress test automático cada noche a las 2am
+    triggers {
+        cron('0 2 * * *')
+    }
+
     stages {
 
         stage('Checkout') {
@@ -24,23 +29,39 @@ pipeline {
             }
         }
 
-        stage('Smoke Test k6') {
+        // ✅ Siempre corre — cualquier rama, cualquier push
+        stage('Smoke Test') {
             steps {
-                echo '🔥 Corriendo smoke test con k6...'
+                echo '🔥 Smoke test — sanidad básica...'
                 sh 'k6 run k6/smoke-test.js --env BASE_URL=http://host.docker.internal:8000'
             }
         }
 
-        stage('Load Test k6') {
+        // ✅ Solo corre en rama main
+        stage('Load Test') {
+            when { branch 'main' }
             steps {
-                echo '📈 Corriendo load test con k6...'
+                echo '📈 Load test — carga normal...'
                 sh 'k6 run k6/load-test.js --env BASE_URL=http://host.docker.internal:8000'
+            }
+        }
+
+        // 🌙 Solo corre en el cron nocturno
+        stage('Stress Test') {
+            when {
+                anyOf {
+                    triggeredBy 'TimerTrigger'
+                }
+            }
+            steps {
+                echo '💥 Stress test — prueba de límites...'
+                sh 'k6 run k6/stress-test.js --env BASE_URL=http://host.docker.internal:8000'
             }
         }
 
         stage('Done') {
             steps {
-                echo '✅ Pipeline completado exitosamente!'
+                echo '✅ Pipeline completado!'
             }
         }
     }
