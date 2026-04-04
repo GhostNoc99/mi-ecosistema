@@ -34,7 +34,7 @@ pipeline {
 
         stage('Smoke Test') {
             steps {
-                echo '🔥 Smoke test — sanidad básica...'
+                echo '🔥 Smoke test...'
                 sh 'k6 run k6/smoke-test.js --env BASE_URL=http://host.docker.internal:8000'
             }
         }
@@ -47,8 +47,13 @@ pipeline {
                 }
             }
             steps {
-                echo '📈 Load test — carga normal...'
-                sh 'k6 run k6/load-test.js --env BASE_URL=http://host.docker.internal:8000'
+                echo '📈 Load test con reporte...'
+                sh '''
+                    mkdir -p k6/reports
+                    k6 run k6/reporter.js \
+                      --env BASE_URL=http://host.docker.internal:8000 \
+                      --out influxdb=http://host.docker.internal:8086/k6
+                '''
             }
         }
 
@@ -60,7 +65,7 @@ pipeline {
                 }
             }
             steps {
-                echo '💥 Stress test — prueba de límites...'
+                echo '💥 Stress test...'
                 sh 'k6 run k6/stress-test.js --env BASE_URL=http://host.docker.internal:8000'
             }
         }
@@ -73,6 +78,26 @@ pipeline {
     }
 
     post {
+        always {
+            script {
+                def reportFile = 'k6/reports/report.html'
+                if (fileExists(reportFile)) {
+                    emailext(
+                        to: 'newprojectcv.1999@gmail.com',
+                        subject: "k6 Performance Report - Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
+                        body: """
+                            <h2>🚀 Reporte de Performance</h2>
+                            <p><b>Build:</b> #${env.BUILD_NUMBER}</p>
+                            <p><b>Estado:</b> ${currentBuild.result}</p>
+                            <p><b>Rama:</b> ${env.GIT_BRANCH}</p>
+                            <p>Ver reporte completo en el adjunto.</p>
+                        """,
+                        attachmentsPattern: 'k6/reports/report.html',
+                        mimeType: 'text/html'
+                    )
+                }
+            }
+        }
         failure {
             echo '❌ Algo salió mal!'
         }
