@@ -5,6 +5,10 @@ pipeline {
         cron('0 2 * * *')
     }
 
+    parameters {
+        booleanParam(name: 'RUN_STRESS', defaultValue: false, description: 'Correr stress test manualmente')
+    }
+
     stages {
 
         stage('Checkout') {
@@ -50,7 +54,10 @@ pipeline {
 
         stage('Stress Test') {
             when {
-                triggeredBy 'TimerTrigger'
+                anyOf {
+                    triggeredBy 'TimerTrigger'
+                    expression { params.RUN_STRESS == true }
+                }
             }
             steps {
                 echo '💥 Stress test — prueba de límites...'
