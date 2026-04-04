@@ -26,15 +26,15 @@ pipeline {
 
         stage('Smoke Test k6') {
             steps {
-                echo '🔥 Corriendo smoke test con K6...'
-                sh 'k6 run k6/smoke-test.js'
+                echo '🔥 Corriendo smoke test con k6...'
+                sh 'k6 run k6/smoke-test.js --env BASE_URL=http://host.docker.internal:8000'
             }
         }
 
         stage('Load Test k6') {
             steps {
                 echo '📈 Corriendo load test con k6...'
-                sh 'k6 run k6/load-test.js'
+                sh 'k6 run k6/load-test.js --env BASE_URL=http://host.docker.internal:8000'
             }
         }
 
