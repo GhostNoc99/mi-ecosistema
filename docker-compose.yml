@@ -22,5 +22,30 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  # 📊 InfluxDB — almacena métricas de k6
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=k6
+      - INFLUXDB_HTTP_AUTH_ENABLED=false
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+
+  # 📈 Grafana — visualiza las métricas
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - influxdb
+
 volumes:
   postgres_data:
+  influxdb_data:
+  grafana_data:
