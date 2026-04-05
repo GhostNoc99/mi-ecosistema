@@ -49,7 +49,11 @@ function getOptions() {
   }
 }
 
-export const options = getOptions();
+//export const options = getOptions();
+export const options = {
+  ...getOptions(),
+  summaryTrendStats: ['min', 'avg', 'med', 'max', 'p(50)', 'p(90)', 'p(95)', 'p(99)'],
+};
 
 function getEscenario() {
   if (TEST_TYPE === 'smoke') {
