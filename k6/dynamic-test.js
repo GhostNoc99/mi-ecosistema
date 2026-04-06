@@ -79,7 +79,7 @@ function getEscenario() {
   } else if (TEST_TYPE === 'load') {
     return {
       titulo: "Prueba de Carga (Load Test)",
-      descripcion: `Sube a ${VUS} usuarios, mantiene ${DURATION}, luego baja`,
+      descripcion: `Sube a ${VUS} usuarios, mantienes ${DURATION}, luego baja`,
       diagrama: `
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <div style="background:#3498db;color:white;padding:10px 20px;border-radius:6px;text-align:center;">
