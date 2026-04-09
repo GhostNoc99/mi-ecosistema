@@ -573,8 +573,9 @@ function generarReporte(data) {
 }
 
 export function handleSummary(data) {
+  const reportName = __ENV.REPORT_NAME || 'dynamic-report.html';
   return {
-    "k6/reports/dynamic-report.html": generarReporte(data),
+    [`k6/reports/${reportName}`]: generarReporte(data),
     stdout: textSummary(data, { indent: " ", enableColors: true }),
   };
 }
