@@ -9,6 +9,7 @@ const BODY      = __ENV.BODY !== 'null' ? __ENV.BODY : null;
 const VUS       = parseInt(__ENV.VUS || '5');
 const DURATION  = __ENV.DURATION || '30s';
 const TEST_TYPE = __ENV.TEST_TYPE || 'smoke';
+//nombre de flujo
 
 function getOptions() {
   if (TEST_TYPE === 'smoke') {
