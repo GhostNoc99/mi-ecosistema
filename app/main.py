@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from models.product import Base
 from database import engine
 from routes import products
+from routes import products_enterprise   # ← AGREGAR
 
-# Crea la tabla en PostgreSQL automáticamente al iniciar
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -13,6 +13,7 @@ app = FastAPI(
 )
 
 app.include_router(products.router)
+app.include_router(products_enterprise.router)   # ← AGREGAR
 
 @app.get("/health")
 def health_check():
